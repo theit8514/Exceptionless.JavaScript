@@ -1662,9 +1662,9 @@ var Utils = (function () {
             if (startsWithWildcard && endsWithWildcard)
                 return value.indexOf(pattern) !== -1;
             if (startsWithWildcard)
-                return value.lastIndexOf(pattern, 0) !== -1;
-            if (endsWithWildcard)
                 return value.lastIndexOf(pattern) === (value.length - pattern.length);
+            if (endsWithWildcard)
+                return value.indexOf(pattern) === 0;
             return value === pattern;
         }
         function stringifyImpl(data, exclusions) {
@@ -2575,7 +2575,8 @@ function processJQueryAjaxError(event, xhr, settings, error) {
         client.submitNotFound(settings.url);
     }
     else if (xhr.status !== 401) {
-        client.createUnhandledException(error, 'JQuery.ajaxError')
+        var err = new Error(error);
+        client.createUnhandledException(err, 'JQuery.ajaxError')
             .setSource(settings.url)
             .setProperty('status', xhr.status)
             .setProperty('request', settings.data)

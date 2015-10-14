@@ -69,12 +69,13 @@ function processUnhandledException(stackTrace:TraceKit.StackTrace, options?:any)
   builder.submit();
 }
 
-function processJQueryAjaxError(event, xhr, settings, error:Error): void {
+function processJQueryAjaxError(event, xhr, settings, error:string): void {
   var client = ExceptionlessClient.default;
   if (xhr.status === 404) {
     client.submitNotFound(settings.url);
   } else if (xhr.status !== 401) {
-    client.createUnhandledException(error, 'JQuery.ajaxError')
+    var err = new Error(error);
+    client.createUnhandledException(err, 'JQuery.ajaxError')
       .setSource(settings.url)
       .setProperty('status', xhr.status)
       .setProperty('request', settings.data)
